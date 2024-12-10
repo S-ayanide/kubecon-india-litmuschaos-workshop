@@ -10,8 +10,8 @@ In the second half, we’ll guide you through installing Litmus, running your fi
 
 ### Hostead Chaos Center
 
-Hosted Chaos Center: http://35.247.54.65:9091/
-Credentials: `admin/Root@123`
+* Hosted Chaos Center: http://35.247.54.65:9091/
+* Credentials: `admin/Root@123`
 
 ### Tooling used
 
