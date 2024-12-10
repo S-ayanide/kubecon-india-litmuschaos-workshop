@@ -149,6 +149,8 @@ This guide provides a step-by-step process for creating custom chaos experiments
 
 You can link the Chaos Charts GitHub repository as a ChaosHub in your ChaosCenter. This integration allows you to access experiments via the ChaosCenter UI. Follow the instructions [here](https://docs.litmuschaos.io/docs/concepts/chaoshub#connecting-to-a-git-repository-using-chaoshub).
 
+**Note:** You can refer to the [ispeakc0de/chaos-charts](https://github.com/ispeakc0de/chaos-charts/tree/byoc) repository for sample charts(byoc branch). This repository will be used to demonstrate the process of connecting to ChaosHub.
+
 #### **Executing the Experiment**
 
 Create and run the experiment by selecting it from the newly connected ChaosHub in the ChaosCenter UI.
