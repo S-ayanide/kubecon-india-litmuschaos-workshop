@@ -32,3 +32,123 @@ Chaos Execution Plane contains the components responsible for orchestrating the 
 Chaos control plane consists of micro-services responsible for the functioning of the ChaosCenter, the website-based portal that can be used for interacting with Litmus, apart from the CLI. Chaos Plane facilitates the creation and scheduling of chaos experiments, system observability during the event of chaos, and post-processing and analysis of fault results.
 
 ![Control Plane](./assets/chaos-control-plane.png)
+
+### Workshop: Designing Your Own Chaos Experiment
+
+This guide provides a step-by-step process for creating custom chaos experiments using the Litmus SDK. The Litmus SDK simplifies the creation of experiments by scaffolding essential files in the appropriate directory based on input attributes provided by the chart developer. These scaffolded files act as templates and can be customized as required.
+
+#### **Pre-Requisites**
+- Ensure that Go is installed and the `GOPATH` environment variable is properly configured.
+
+#### **Steps to Generate Experiment Manifests**
+
+1. **Clone the Litmus-Go Repository**  
+   Clone the repository and navigate to the `contribute/developer-guide` directory:
+
+   ```bash
+   git clone https://github.com/litmuschaos/litmus-go.git
+   cd litmus-go/contribute/developer-guide
+   ```
+
+2. **Build the Litmus SDK**  
+   Compile the SDK using the following command:
+
+   ```bash
+   go build -o ./litmus-sdk ./bin/main.go
+   ```
+
+3. **Define Experiment Attributes**  
+   Populate the `attributes.yaml` file with the required details for your chaos experiment. Use `attributes.yaml.sample` as a reference.
+
+   For example, to create an experiment targeting one replica of an NGINX deployment, the `attributes.yaml` may look as follows:
+
+   ```yaml
+   ---
+   name: "sample-exec-chaos"
+   version: "0.1.0"
+   category: "sample-category"
+   repository: "https://github.com/litmuschaos/litmus-go/tree/master/sample-category/sample-exec-chaos"
+   community: "https://kubernetes.slack.com/messages/CNXNB0ZTN"
+   description: "Executes commands inside target pods to inject chaos, waits for the specified duration, and reverts the chaos."
+   keywords:
+     - "pods"
+     - "kubernetes"
+     - "sample-category"
+     - "exec"
+   platforms:
+     - Minikube
+   scope: "Namespaced"
+   auxiliaryappcheck: false
+   permissions:
+     - apigroups:
+         - ""
+         - "batch"
+         - "apps"
+         - "litmuschaos.io"
+       resources:
+         - "jobs"
+         - "pods"
+         - "pods/log"
+         - "events"
+         - "deployments"
+         - "replicasets"
+         - "pods/exec"
+         - "chaosengines"
+         - "chaosexperiments"
+         - "chaosresults"
+       verbs:
+         - "create"
+         - "list"
+         - "get"
+         - "patch"
+         - "update"
+         - "delete"
+         - "deletecollection"
+   maturity: "alpha"
+   maintainers:
+     - name: "ispeakc0de"
+       email: "shubham@chaosnative.com" 
+   provider:
+     name: "ChaosNative"
+   minkubernetesversion: "1.12.0"
+   references:
+     - name: Documentation
+       url: "https://docs.litmuschaos.io/docs/getstarted/"
+   ```
+
+4. **Generate Experiment Artifacts**  
+   Use the Litmus SDK to generate experiment artifacts based on the `attributes.yaml` file:
+
+   ```bash
+   ./litmus-sdk generate experiment -t exec -f=attributes.yaml
+   ```
+
+   **Supported Types (`-t` flag values):**
+  - `exec`: Creates an exec-based chaoslib (default).
+  - `helper`: Creates a helper-based chaoslib.
+  - `aws`, `vmware`, `azure`, `gcp`: Creates platform-specific experiments.
+
+5. **Customize the Experiment**  
+   Modify the generated files to include desired behavior:
+  - **Pre-Chaos Checks:** Add checks before chaos injection at the `@TODO: user PRE-CHAOS-CHECK` marker in `experiment/<name>.go`.
+  - **Chaos Injection:** Modify chaos logic at the `@TODO: user INVOKE-CHAOSLIB` marker in `experiment/<name>.go`.
+  - **Library Code:** Implement low-level execution in the `chaosLib/litmus/<name>/lib/<name>.go` file.
+  - **Post-Chaos Checks:** Add checks after chaos injection at the `@TODO: user POST-CHAOS-CHECK` marker.
+
+6. **Document the Experiment**  
+   Create a README file explaining the purpose, details, and usage of the experiment. Save it as `experiments/<category>/<name>/README.md`.
+
+7. **Generate Charts**  
+   Once the experiment is complete, generate charts for submission to the Chaos Charts repository:
+
+   ```bash
+   ./litmus-sdk generate chart -f=attributes.yaml
+   ```
+
+#### **Connecting to ChaosHub**
+
+You can link the Chaos Charts GitHub repository as a ChaosHub in your ChaosCenter. This integration allows you to access experiments via the ChaosCenter UI. Follow the instructions [here](https://docs.litmuschaos.io/docs/concepts/chaoshub#connecting-to-a-git-repository-using-chaoshub).
+
+#### **Executing the Experiment**
+
+Create and run the experiment by selecting it from the newly connected ChaosHub in the ChaosCenter UI.
