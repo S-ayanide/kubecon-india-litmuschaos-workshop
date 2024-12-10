@@ -8,6 +8,11 @@ Join us for an immersive workshop on LitmusChaos, the CNCF-incubating chaos engi
 
 In the second half, we’ll guide you through installing Litmus, running your first chaos experiment, and connecting your ChaosHub. We’ll explore how to create custom experiments using the Litmus SDK, encouraging participants to suggest and test their own chaos scenarios. Bring Your Own Chaos (BYOC) and let’s execute it together in real time. Don’t miss this interactive deep dive into chaos engineering!
 
+### Hostead Chaos Center
+
+Hosted Chaos Center: `http://35.247.54.65:9091/`
+Credentials: `admin/Root@123`
+
 ### Tooling used
 
 1. Prometheus
